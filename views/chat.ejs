@@ -1,0 +1,116 @@
+ <html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title>Messagerie</title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+        <style>
+            body{
+                background-color:#2c2f33;
+            }
+            p{
+                color:ghostwhite;
+            }
+            #message{
+                background-color: #23272a; color:whitesmoke;
+            }
+            h2{
+                color:whitesmoke;
+            }
+            .username{
+                color:Yellow;
+                font-size:120%;
+            }
+            .date{
+                color:gray; font-size:10px;
+            }
+        </style>
+
+
+
+
+    </head>
+    <body>
+    <div class="container-fluid sticky-top">
+        <div class="row ">
+            <div class="col-md-8 col-sm-8">
+                <!-- id messages permet d'accrocher tous les messages dans cette div-->
+                <div class="row overflow-scroll" id="messages"></div>
+                <div class="row">
+                    <input id="message" type="text" placeholder="message" name="message"  class="border-0 rounded col-md-10">
+                    <button class="border-0 rounded col-md-2" type="submit" onclick="emitData()">Submit</button>
+                </div>
+            </div>
+            <div class="col-md-4  col-sm-4">
+                <div class="row sticky-top">
+                    <div class="col-md-12 col-sm-12">
+                        <h2 class="text-center">User</h2>
+                    </div>
+                    <!-- id joined permet d'accrocher toutes les annonces des joins/leave dans cette div-->
+                        <div class="col-md-12 col-sm-12"  id="joined">
+                    </div>
+                 </div>
+
+            </div>
+        </div>
+    </div>
+    </body>
+</html>
+ <script src="/socket.io/socket.io.js" ></script>
+ <script >
+     let room = `<%= room %>`.toString();
+     let username = `<%= username %>`.toString();
+     const socket = io.connect(window.location.origin);
+    //avant la fermeture de la page
+     window.onclose = function(){
+         socket.emit("leaveRoom",{username,room});
+     };
+
+     // connection a l'api
+     // envoie une requete avec la room et le nom d'utilisateur qui dit qu'il a rejoin la room
+     socket.emit("joinRoom",{username,room});
+    //permet d'utiliser enter pour envoyer un message
+     function emitDataOnEnter(key){
+         if (key.key === 'Enter'){
+             emitData();
+         }
+     }
+    //va chercher le dans le imput pour l'envoyer
+     function emitData(){
+         let message = document.querySelector("#message").value;
+         if(message.length > 0){
+             let date = new Date();
+             socket.emit("message",{message,from:"<%= username %>",date:date.getDate()+"/"+date.getMonth()+"/"+date.getFullYear(),room});
+             document.querySelector("#message").value = "";
+         }
+     }
+    //lorsqu'un message est émis les éléments html sont créés/affichés
+     socket.on(room,({from,message,date}) =>{
+         let messageElement = document.createElement("p");
+         messageElement.classList.add('col-md-12');
+         messageElement.innerHTML = `<span class="username">${from}</span>: <span class="date">${date}</span> <br> ${message} `;
+         document.querySelector("#messages").appendChild(messageElement);
+     });
+    //montre quand un utilisateur quitte la room
+     socket.on("leave"+room, username => {
+         let element = document.createElement("div");
+         element.classList.add('alert');
+         element.classList.add('alert-danger');
+         element.classList.add('alert-dismissible')
+         element.innerText = `${username} has left`;
+         document.querySelector("#joined").appendChild(element);
+     });
+     //montre quand un utilisateur rejoind la room
+     socket.on("join"+room, username => {
+
+         let element = document.createElement("div");
+         element.classList.add('alert');
+         element.classList.add('alert-info');
+         element.classList.add('alert-dismissible')
+         element.innerText = `${username} has joined`;
+         document.querySelector("#joined").appendChild(element);
+
+     });
+
+     document.addEventListener('keypress', emitDataOnEnter)
+ </script>
+

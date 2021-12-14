@@ -1,0 +1,53 @@
+<html lang="fr">
+    <head>
+        <meta charset="UTF-8">
+        <title></title>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    </head>
+    <body>
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12 bg-primary">
+                    <h1><center>Login</center></h1>
+                </div>
+            </div>
+
+                <form action="/chat" class="col-md-12">
+                    <div class="row">
+                    <div class="form-group col-md-6 mx-auto">
+                        <label for="exampleInputEmail1">Pseudo</label>
+                        <input id="username" placeholder="username" type="text" name="username" class="form-control"/>
+                        <small id="emailHelp" class="form-text text-muted">Bidondon <- est le pseudo par deafaut si vous ne mettez rien </small>
+                    </div>
+                    </div>
+                    <div class="row">
+                    <div class="form-group col-md-6 mx-auto">
+                        <label for="exampleInputPassword1">Room de chat</label>
+                        <input id="room" placeholder="room" type="text" name="room" class="form-control"/>
+                        <small id="emailHelp" class="form-text text-muted">global <- est la room par deafaut si vous ne mettez rien </small>
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class=" col-md-6 mx-auto">
+                    <button onclick="defaultData()" type="submit" class="btn btn-primary mx-auto" >Submit</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </body>
+</html>
+<script>
+    //permet de donner le nom Bidondon à l'utilisateur et rejoindre la room global si les champs sont vides
+    function defaultData(){
+        let room = document.getElementById('room');
+        let username = document.getElementById("username");
+        if(room.value == ""){
+            room.value = "global";
+        }
+    if(username.value == ""){
+        username.value="Bidondon";
+    }
+    }
+</script>
