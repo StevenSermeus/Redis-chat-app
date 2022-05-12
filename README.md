@@ -1,5 +1,8 @@
 Redis chat app with nodejs
 
+First ever chat app and utilisation of node js
+
+
 Needed
 
 You need to have nodejs install and a Redis cluster for setting up a redis cluster you can take a look at this tutorial
